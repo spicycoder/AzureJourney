@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AzureJourney.AppHost/AzureJourney.AppHost.csproj" />
+  <Project Path="AzureJourney.ServiceDefaults/AzureJourney.ServiceDefaults.csproj" />
+  <Project Path="AzureWebApp/AzureWebApp.csproj" />
+</Solution>

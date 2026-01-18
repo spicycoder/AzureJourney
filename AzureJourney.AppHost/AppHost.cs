@@ -1,5 +1,13 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddProject<Projects.AzureWebApp>("azurewebapp");
+var dbserver = builder
+    .AddSqlServer("ProductsDBServer")
+    .WithLifetime(ContainerLifetime.Persistent);
+
+var db = dbserver.AddDatabase("ProductsDB");
+
+builder.AddProject<Projects.AzureWebApp>("azurewebapp")
+    .WithReference(db)
+    .WaitFor(db);
 
 builder.Build().Run();

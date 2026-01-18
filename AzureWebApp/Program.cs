@@ -1,4 +1,5 @@
 using AspNetCore.Swagger.Themes;
+using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,9 +8,14 @@ builder.AddServiceDefaults();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+var connectionString = builder.Configuration.GetConnectionString("ProductsDB");
+builder.Services.Initialize(connectionString);
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
+
+await app.Services.Migrate();
 
 app.MapOpenApi();
 app.UseSwaggerUI(

@@ -1,42 +1,44 @@
 ﻿using AzureWebApp.Models;
-using Bogus;
+using DataAccess;
+using DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureWebApp.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductsController(ILogger<ProductsController> logger) : ControllerBase
+public class ProductsController(
+    ILogger<ProductsController> logger,
+    ProductsDbContext dbContext) : ControllerBase
 {
     [HttpGet("list")]
     public async Task<IActionResult> ListProducts()
     {
-        var products = new Faker<Product>()
-            .RuleFor(x => x.Id, x => x.Random.Uuid())
-            .RuleFor(x => x.Name, x => x.Commerce.ProductName())
-            .RuleFor(x => x.Description, x => x.Commerce.ProductDescription())
-            .RuleFor(x => x.Price, x => x.Commerce.Price(10, 200))
-            .RuleFor(x => x.Quantity, x => x.Random.Int(1, 100))
-            .Generate(10);
+        var products = dbContext.Products.ToList();
 
-        logger.LogInformation("Generated {Count} products", products.Count);
+        if (products.Count == 0)
+        {
+            logger.LogInformation("No products found");
+            return NotFound();
+        }
 
+        logger.LogInformation("Found {Count} products", products.Count);
         return Ok(products);
     }
 
     [HttpPost("create")]
     public async Task<IActionResult> CreateProduct([FromBody] ProductCreationRequest request)
     {
-        var productId = Guid.NewGuid();
-
         var newProduct = new Product
         {
-            Id = productId,
             Name = request.Name,
             Description = request.Description,
             Price = request.Price,
             Quantity = request.Quantity
         };
+
+        dbContext.Products.Add(newProduct);
+        await dbContext.SaveChangesAsync();
 
         logger.LogInformation("Created new product with ID: {ProductId}", newProduct.Id);
 
@@ -44,8 +46,18 @@ public class ProductsController(ILogger<ProductsController> logger) : Controller
     }
 
     [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteProduct([FromBody] string productId)
+    public async Task<IActionResult> DeleteProduct([FromBody] Guid productId)
     {
+        var product = await dbContext.Products.FindAsync(productId);
+        if (product == null)
+        {
+            logger.LogWarning("Product with ID: {ProductId} not found for deletion", productId);
+            return NotFound();
+        }
+
+        dbContext.Products.Remove(product);
+        await dbContext.SaveChangesAsync();
+
         logger.LogInformation("Deleted product with ID: {ProductId}", productId);
         return NoContent();
     }

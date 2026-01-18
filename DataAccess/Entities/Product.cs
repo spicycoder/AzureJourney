@@ -1,4 +1,4 @@
-﻿namespace AzureWebApp.Models;
+﻿namespace DataAccess.Entities;
 
 public class Product
 {

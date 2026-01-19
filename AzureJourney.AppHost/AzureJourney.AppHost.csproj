@@ -7,9 +7,11 @@
     <UserSecretsId>8aaa699e-c200-46f6-ad05-afec44ee7bbe</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Azure.Functions" />
     <PackageReference Include="Aspire.Hosting.SqlServer" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AzureFunctions\AzureFunctions.csproj" />
     <ProjectReference Include="..\AzureWebApp\AzureWebApp.csproj" />
   </ItemGroup>
 </Project>

@@ -8,9 +8,9 @@
     - [ ] Table Storage
     - [ ] Queue
 - [ ] Azure Functions
-    - [ ] Http Trigger
+    - [x] Http Trigger
     - [ ] Queue Trigger
-    - [ ] Timer Trigger
+    - [x] Timer Trigger
     - [ ] Blob Trigger
 
 ![Azure Journey](https://breakingmoulds.com/wp-content/uploads/2014/06/bilbo-baggins-adventure-with-quote.jpg)

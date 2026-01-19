@@ -10,4 +10,8 @@ builder.AddProject<Projects.AzureWebApp>("azurewebapp")
     .WithReference(db)
     .WaitFor(db);
 
+builder.AddAzureFunctionsProject<Projects.AzureFunctions>("azurefunctions")
+    .WithReference(db)
+    .WaitFor(db);
+
 builder.Build().Run();
